@@ -1,0 +1,58 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Represents a voter or administrator in the university election system.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "role": { "type": "string", "enum": ["ADMIN", "VOTER", "CANDIDATE"] },
+        "password": { "type": "string" },
+        "hasVoted": { "type": "boolean" }
+      },
+      "required": ["id", "name", "role"]
+    },
+    "Candidate": {
+      "title": "Candidate",
+      "description": "Represents a student who has applied to be a candidate for a post.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "post": { "type": "string" },
+        "status": { "type": "string", "enum": ["PENDING", "APPROVED", "REJECTED"] },
+        "manifesto": { "type": "string" },
+        "photoUrl": { "type": "string" },
+        "votes": { "type": "number" }
+      },
+      "required": ["id", "userId", "name", "post", "status", "votes"]
+    },
+    "ElectionConfig": {
+      "title": "Election Configuration",
+      "description": "Global settings for the election process.",
+      "type": "object",
+      "properties": {
+        "status": { "type": "string", "enum": ["ONGOING", "FINISHED"] },
+        "duration": { "type": "string" },
+        "officialWinner": { "type": "string" },
+        "availablePosts": { "type": "array" }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles and voting status."
+    },
+    "/candidates/{candidateId}": {
+      "schema": "Candidate",
+      "description": "Candidate applications and profiles."
+    },
+    "/config/election": {
+      "schema": "ElectionConfig",
+      "description": "Global election state and configuration."
+    }
+  }
+}

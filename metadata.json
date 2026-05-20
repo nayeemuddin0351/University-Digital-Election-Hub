@@ -1,0 +1,6 @@
+{
+  "name": "RMSTU Digital Election Hub",
+  "description": "A secure digital voting system for RMSTU University students and candidates.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

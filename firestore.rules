@@ -1,0 +1,69 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['id', 'name', 'role']) 
+        && data.id is string && data.id.size() <= 128
+        && data.name is string && data.name.size() <= 200
+        && data.role in ['ADMIN', 'VOTER', 'CANDIDATE']
+        && (!('hasVoted' in data) || data.hasVoted is bool)
+        && (!('password' in data) || (data.password is string && data.password.size() <= 100));
+    }
+
+    function isValidCandidate(data) {
+      return data.keys().hasAll(['id', 'userId', 'name', 'status', 'votes'])
+        && data.id is string && data.userId is string && data.name is string 
+        && ((data.posts is list && data.posts.size() >= 1) || (data.post is string))
+        && data.status in ['PENDING', 'APPROVED', 'REJECTED']
+        && data.votes is number;
+    }
+
+    function isValidConfig(data) {
+      return data.keys().hasAll(['status', 'duration', 'officialWinner', 'availablePosts'])
+        && data.status in ['ONGOING', 'FINISHED']
+        && data.duration is string && data.officialWinner is string
+        && data.availablePosts is list;
+    }
+
+    match /users/{userId} {
+      allow read: if true;
+      allow create: if isValidUser(incoming()) && userId == incoming().id;
+      allow update: if userId == incoming().id && (
+        (incoming().diff(existing()).affectedKeys().hasOnly(['hasVoted']) && incoming().hasVoted is bool) ||
+        (incoming().diff(existing()).affectedKeys().hasOnly(['votedPosts']) && incoming().votedPosts is list) ||
+        (incoming().diff(existing()).affectedKeys().hasOnly(['role']) && incoming().role in ['ADMIN', 'VOTER', 'CANDIDATE']) ||
+        (incoming().diff(existing()).affectedKeys().hasAll(['hasVoted', 'role']) && incoming().diff(existing()).affectedKeys().size() <= 2 && incoming().hasVoted is bool && incoming().role in ['ADMIN', 'VOTER', 'CANDIDATE']) ||
+        (incoming().diff(existing()).affectedKeys().hasOnly(['name', 'password'])) ||
+        (incoming().diff(existing()).affectedKeys().size() == 0)
+      );
+    }
+
+    match /candidates/{candidateId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    match /config/election {
+      allow read: if true;
+      allow write: if (
+        isValidConfig(incoming()) ||
+        (incoming().diff(existing()).affectedKeys().hasOnly(['status']) && incoming().status in ['ONGOING', 'FINISHED']) ||
+        (incoming().diff(existing()).affectedKeys().hasOnly(['duration'])) ||
+        (incoming().diff(existing()).affectedKeys().hasOnly(['date'])) ||
+        (incoming().diff(existing()).affectedKeys().hasOnly(['startTime'])) ||
+        (incoming().diff(existing()).affectedKeys().hasOnly(['endTime'])) ||
+        (incoming().diff(existing()).affectedKeys().hasOnly(['officialWinner'])) ||
+        (incoming().diff(existing()).affectedKeys().hasOnly(['availablePosts']) && incoming().availablePosts is list) ||
+        (incoming().diff(existing()).affectedKeys().size() == 0)
+      );
+    }
+  }
+}
