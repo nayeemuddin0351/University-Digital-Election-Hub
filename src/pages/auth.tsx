@@ -27,11 +27,6 @@ export default function AuthPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  if (currentUser) {
-    setLocation("/portal");
-    return null;
-  }
-
   const handleSignIn = () => {
     setError("");
     const id = loginId.trim();
@@ -51,6 +46,7 @@ export default function AuthPage() {
     }
     setCurrentUser(user);
     setLoading(true);
+    setLocation("/portal");
   };
 
   const handleSignUp = () => {
@@ -73,6 +69,7 @@ export default function AuthPage() {
     registerUser(newUser);
     setCurrentUser(newUser);
     setLoading(true);
+    setLocation("/portal");
   };
 
   const switchTab = (t: Tab) => {
