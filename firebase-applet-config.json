@@ -1,10 +1,10 @@
 {
-  "projectId": "gen-lang-client-00603175-67a9f",
-  "appId": "1:861066710140:web:a757dfb249356589214df9",
-  "apiKey": "AIzaSyDPooMvIW6rOfa1oA3rYEMfyfM4EkFulIo",
-  "authDomain": "gen-lang-client-00603175-67a9f.firebaseapp.com",
+  "projectId": "rmstu-election-2026",
+  "appId": "1:729738824915:web:2d21bff1ff74eb6cd09826",
+  "apiKey": "AIzaSyDL-lxN3qNgouTofWj35bHRvGUySXIfwgI",
+  "authDomain": "rmstu-election-2026.firebaseapp.com",
   "firestoreDatabaseId": "(default)",
-  "storageBucket": "gen-lang-client-00603175-67a9f.firebasestorage.app",
-  "messagingSenderId": "861066710140",
-  "measurementId": "G-Y2L4979WTY"
+  "storageBucket": "rmstu-election-2026.firebasestorage.app",
+  "messagingSenderId": "729738824915",
+  "measurementId": ""
 }
