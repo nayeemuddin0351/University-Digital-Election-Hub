@@ -180,9 +180,10 @@ export function ElectionProvider({ children }: { children: ReactNode }) {
   };
 
   const syncStatusToFirestore = (status: ElectionStatus) => {
+    const hasVotes = candidates.some(c => c.votes > 0);
     updateDoc(doc(db, "config", "election"), {
       status,
-      ...(status === "FINISHED" ? {
+      ...(status === "FINISHED" && electionDate && hasVotes ? {
         officialWinner: candidates
           .filter(c => c.status === "APPROVED")
           .reduce((max, c) => (c.votes > (max?.votes ?? -1) ? c : max), candidates.filter(c => c.status === "APPROVED")[0])

@@ -1012,7 +1012,7 @@ function ResultsPanel() {
 
   const getVotes = (c: Candidate, post: string) => c.postVotes?.[post] ?? c.votes;
 
-  const isFinished = electionStatus === "FINISHED" && approved.length > 0;
+  const isFinished = electionStatus === "FINISHED" && approved.length > 0 && !!officialWinner;
 
   const postWinners = postsWithCandidates.map(post => ({
     post,
