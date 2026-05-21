@@ -461,15 +461,12 @@ export function ElectionProvider({ children }: { children: ReactNode }) {
         batch.delete(d.ref);
       });
 
-      // 2. Reset Users (Voter status and Role)
+      // 2. Delete all registered users (except admin) — must re-register
       const userSnap = await getDocs(collection(db, "users"));
       userSnap.forEach((d) => {
         const userData = d.data();
         if (userData.id !== "admin") {
-          batch.update(d.ref, { 
-            hasVoted: false,
-            role: "VOTER" 
-          });
+          batch.delete(d.ref);
         }
       });
 
@@ -483,6 +480,8 @@ export function ElectionProvider({ children }: { children: ReactNode }) {
       });
 
       await batch.commit();
+      localStorage.removeItem("election_user");
+      setCurrentUserState(null);
     } catch (error) {
       handleFirestoreError(error, OperationType.WRITE, "reset-operation");
     }
