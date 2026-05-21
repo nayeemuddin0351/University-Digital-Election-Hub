@@ -475,8 +475,11 @@ export function ElectionProvider({ children }: { children: ReactNode }) {
       batch.update(configRef, {
         status: "FINISHED",
         officialWinner: "",
-        // We keep availablePosts as they are or reset to default? 
-        // Let's keep them so admin doesn't have to re-add.
+        duration: electionDuration,
+        availablePosts: availablePosts,
+        date: electionDate,
+        startTime: electionStartTime,
+        endTime: electionEndTime,
       });
 
       await batch.commit();

@@ -44,6 +44,7 @@ service cloud.firestore {
         (incoming().diff(existing()).affectedKeys().hasOnly(['name', 'password'])) ||
         (incoming().diff(existing()).affectedKeys().size() == 0)
       );
+      allow delete: if request.auth == null;
     }
 
     match /candidates/{candidateId} {
